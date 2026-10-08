@@ -67,6 +67,7 @@ h1,h2,h3,h4{font-family:var(--f-display);font-weight:600;line-height:1.5;text-wr
 .gnav .cta::after{display:none}
 .gnav .cta:hover{background:var(--accent)}
 .menu-btn{display:none;background:none;border:0;width:44px;height:44px;cursor:pointer;position:relative}
+.menu-backdrop{display:none}
 .menu-btn span{position:absolute;left:11px;right:11px;height:1px;background:var(--ink);transition:.3s}
 .menu-btn span:nth-child(1){top:17px}.menu-btn span:nth-child(2){top:26px}
 .menu-open .menu-btn span:nth-child(1){top:21px;transform:rotate(45deg)}
@@ -76,13 +77,24 @@ html[data-variant="c"] .logo{align-items:center}
 html[data-variant="b"] .site-head{border-top:3px solid var(--accent)}
 @media (max-width:960px){
   .menu-btn{display:block}
+  .menu-backdrop{display:block}
   html[data-variant="c"] .head-in{flex-direction:row;padding-block:0;height:72px}
   html[data-variant="c"] .logo{align-items:flex-start}
-  .gnav{position:fixed;inset:72px 0 0 0;background:#fff;flex-direction:column;align-items:stretch;gap:0;padding:12px var(--gutter) 40px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:.3s;overflow-y:auto}
-  .menu-open .gnav{opacity:1;transform:none;pointer-events:auto}
-  .gnav a{padding:18px 4px;border-bottom:1px solid var(--line);font-size:15px}
-  .gnav a::after{display:none}
-  .gnav .cta{margin-top:24px;text-align:center;border-bottom:0}
+  .site-head{backdrop-filter:none;-webkit-backdrop-filter:none;background:#fff}
+  .menu-btn{position:relative;z-index:3}
+  .gnav{position:fixed;top:0;right:0;bottom:0;width:min(82vw,340px);background:#fff;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;
+    padding:calc(env(safe-area-inset-top,0px) + 86px) 28px calc(env(safe-area-inset-bottom,0px) + 28px);
+    transform:translateX(100%);visibility:hidden;transition:transform .38s ease,visibility 0s linear .38s;box-shadow:-14px 0 40px rgba(10,20,40,.14);z-index:2;overflow-y:auto}
+  .gnav::before{content:"Menu";position:absolute;top:calc(env(safe-area-inset-top,0px) + 28px);left:28px;font-family:var(--f-en);font-style:italic;font-size:15px;letter-spacing:.14em;color:var(--accent)}
+  .menu-open .gnav{transform:none;visibility:visible;transition:transform .38s ease,visibility 0s}
+  .gnav a{padding:clamp(11px,2.1vh,16px) 2px;border-bottom:1px solid var(--line);font-size:15px;font-family:var(--f-display);font-weight:600;letter-spacing:.08em;color:var(--main);display:flex;justify-content:space-between;align-items:center}
+  .gnav a:not(.cta)::after{content:"";display:block;position:static;width:14px;height:1px;background:var(--main);opacity:.45;transform:none;transition:width .3s}
+  .gnav a.on{color:var(--accent)}
+  .gnav a.on::after{width:22px;opacity:1;background:var(--accent)}
+  .gnav .cta{margin-top:22px;justify-content:center;border-bottom:0;padding:15px 20px;font-family:var(--f-body);font-weight:500;color:#fff}
+  .menu-backdrop{position:fixed;inset:0;background:rgba(6,22,44,.42);opacity:0;pointer-events:none;transition:opacity .38s;z-index:1}
+  .menu-open .menu-backdrop{opacity:1;pointer-events:auto}
+  html.menu-lock,html.menu-lock body{overflow:hidden}
   .head-in{height:72px}
 }
 
@@ -343,6 +355,7 @@ html[data-variant="c"] [data-page="home"] .intro .btn{justify-self:start}
       <small>株式会社エルエムピージャパン</small>
     </a>
     <button class="menu-btn" id="menuBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="gnav"><span></span><span></span></button>
+    <div class="menu-backdrop" id="menuBackdrop" aria-hidden="true"></div>
     <nav class="gnav" id="gnav" aria-label="メインメニュー">
       <a href="index.html" data-nav="home">ホーム</a>
       <a href="business.html" data-nav="business">事業内容</a>
@@ -433,12 +446,17 @@ html[data-variant="c"] [data-page="home"] .intro .btn{justify-self:start}
 
   /* ---------- menu ---------- */
   const menuBtn = $("#menuBtn");
-  function closeMenu() { document.body.classList.remove("menu-open"); menuBtn.setAttribute("aria-expanded", "false"); menuBtn.setAttribute("aria-label", "メニューを開く"); }
-  menuBtn.addEventListener("click", () => {
-    const open = document.body.classList.toggle("menu-open");
+  function setMenu(open) {
+    document.body.classList.toggle("menu-open", open);
+    document.documentElement.classList.toggle("menu-lock", open);
     menuBtn.setAttribute("aria-expanded", String(open));
     menuBtn.setAttribute("aria-label", open ? "メニューを閉じる" : "メニューを開く");
-  });
+  }
+  function closeMenu() { setMenu(false); }
+  menuBtn.addEventListener("click", () => setMenu(!document.body.classList.contains("menu-open")));
+  $("#menuBackdrop").addEventListener("click", closeMenu);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document.body.classList.contains("menu-open")) { closeMenu(); menuBtn.focus(); } });
+  matchMedia("(min-width: 961px)").addEventListener("change", (e) => { if (e.matches) closeMenu(); });
 
   /* ---------- slideshow ---------- */
   let startShow = () => {}, stopShow = () => {};
