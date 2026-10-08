@@ -137,7 +137,8 @@ html[data-variant="b"] .copy p{color:var(--sub)}
 html[data-variant="b"] .copy h1{font-size:clamp(26px,2.9vw,42px)}
 html[data-variant="b"] .copy .en{color:var(--accent);font-style:normal;font-weight:600}
 html[data-variant="b"] .copy::before{content:"";display:block;width:44px;height:2px;background:var(--accent);margin-bottom:26px}
-html[data-variant="b"] .hero-ctrl{left:var(--gutter);bottom:44px;color:var(--main)}
+html[data-variant="b"] .hero-ctrl{left:var(--gutter);right:calc(58.333% + 32px);bottom:44px;color:var(--main);flex-wrap:wrap;gap:10px 18px}
+html[data-variant="b"] .hero-ctrl .pbar{flex:1 1 40px;width:auto;min-width:40px}
 
 /* 案C: 余白で囲んだ写真＋右に縦書きコピー */
 html[data-variant="c"] .hero{background:var(--bg);height:min(86vh,800px);min-height:600px;padding:0 var(--gutter) 70px}
@@ -154,7 +155,7 @@ html[data-variant="c"] .hero-ctrl{left:var(--gutter);bottom:18px;color:var(--mai
   html[data-variant="b"] .copies{grid-row:1;padding:56px var(--gutter) 90px;min-height:clamp(420px,62vw,480px);align-items:flex-start}
   html[data-variant="b"] .copy{top:56px;transform:translateY(18px)}
   html[data-variant="b"] .copy.on{transform:none}
-  html[data-variant="b"] .hero-ctrl{top:auto;bottom:calc(56vh + 26px)}
+  html[data-variant="b"] .hero-ctrl{top:auto;bottom:calc(56vh + 26px);right:var(--gutter)}
   html[data-variant="c"] .slides{right:var(--gutter);top:0;bottom:70px}
   html[data-variant="c"] .copies{right:calc(var(--gutter) + 14px);top:24px;bottom:auto;height:62%;width:auto;background:rgba(255,255,255,.9);padding:18px 12px}
   html[data-variant="a"] .copies{bottom:26%}
@@ -185,10 +186,7 @@ html[data-variant="c"] .sec-head .num{display:block}
 .intro h2{font-size:clamp(24px,3vw,38px);color:var(--main);letter-spacing:.12em;margin-bottom:34px}
 .intro p+p{margin-top:1.4em}
 .intro .en{display:block;color:var(--accent);font-style:italic;margin-bottom:16px}
-html[data-variant="c"] [data-page="home"] .intro > div:not(.pic){display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:clamp(32px,4vw,56px);align-content:start}
-html[data-variant="c"] [data-page="home"] .intro > div:not(.pic) > *{grid-column:1}
-html[data-variant="c"] [data-page="home"] .intro h2{writing-mode:vertical-rl;grid-column:2;grid-row:1 / span 6;margin:0;letter-spacing:.24em;line-height:1.9;white-space:nowrap}
-html[data-variant="c"] [data-page="home"] .intro .btn{justify-self:start}
+
 
 /* business */
 .biz{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,40px)}
@@ -326,8 +324,7 @@ html[data-variant="c"] [data-page="home"] .intro .btn{justify-self:start}
 
 @media (max-width:860px){
   .intro,.message,.foot-grid{grid-template-columns:1fr}
-  html[data-variant="c"] [data-page="home"] .intro > div:not(.pic){display:block}
-  html[data-variant="c"] [data-page="home"] .intro h2{writing-mode:horizontal-tb;white-space:normal;margin:0 0 28px}
+
   .biz,.prod,.reasons,.philo{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr;gap:28px}
   .step .n::after{display:none}
